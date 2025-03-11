@@ -61,8 +61,12 @@ class WeatherService {
     final response = await get(Uri.parse(customUrl));
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as List;
-      resultList.addAll(data.map((e) => Weather.fromJson(e)).toList());
+      if (locations.length > 1) {
+        final data = jsonDecode(response.body) as List;
+        resultList.addAll(data.map((e) => Weather.fromJson(e)).toList());
+      } else {
+        resultList.add(Weather.fromJson(jsonDecode(response.body)));
+      }
     }
     return resultList;
   }

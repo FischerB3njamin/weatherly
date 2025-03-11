@@ -5,7 +5,6 @@ import 'package:weather_app/controller/weather_controller.dart';
 import 'package:weather_app/models/location.dart';
 import 'package:weather_app/models/weather.dart';
 import 'package:weather_app/pages/detail_page.dart';
-import 'package:weather_app/services/weather_service.dart';
 import 'package:weather_app/widgets/main_item.dart';
 
 class MainScreen extends StatefulWidget {
@@ -31,17 +30,40 @@ class _MainScreenState extends State<MainScreen> {
 
   void _loadData() async {
     final String result = await weatherController.getCities();
-
+    List<Location> dataList = [];
     if (result.isNotEmpty) {
       final data = jsonDecode(result);
-      List<Location> dataList = [];
-      for (final item in data) {
-        dataList.add(Location.fromJson(item));
+      dataList = (data as List).map((e) => Location.fromJson(e)).toList();
+
+      if (dataList.isNotEmpty) {
+        weather = await weatherController.featchWeatherByoLcations(dataList, 1);
       }
+    }
+    setState(() {
+      isLoading = false;
       locations = dataList;
-      // fetch weather based on locations
-      weather = await weatherController.featchWeatherByoLcations(locations, 1);
-      setState(() => isLoading = false);
+    });
+  }
+
+  void handleOnTapListTile(controller, e) async {
+    controller.closeView("");
+
+    if (locations.where((location) => location.name == e.name).isEmpty) {
+      locations.add(e);
+      await weatherController.updateCities(jsonEncode(locations));
+      _loadData();
+    }
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailPage(
+            city: e.name,
+            latitude: e.latitude.toString(),
+            longitude: e.longitude.toString(),
+          ),
+        ),
+      );
     }
   }
 
@@ -86,34 +108,10 @@ class _MainScreenState extends State<MainScreen> {
 
                           return result.map(
                             (e) => ListTile(
-                              title: Text(e.name),
-                              subtitle: Text("${e.country}, ${e.state}"),
-                              onTap: () async {
-                                controller.closeView("");
-
-                                if (locations
-                                    .where(
-                                        (location) => location.name == e.name)
-                                    .isEmpty) {
-                                  locations.add(e);
-                                  await weatherController
-                                      .updateCities(jsonEncode(locations));
-                                  _loadData();
-                                }
-                                if (mounted) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DetailPage(
-                                        city: e.name,
-                                        latitude: e.latitude.toString(),
-                                        longitude: e.longitude.toString(),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
+                                title: Text(e.name),
+                                subtitle: Text("${e.country}, ${e.state}"),
+                                onTap: () =>
+                                    handleOnTapListTile(controller, e)),
                           );
                         }
                         return [];

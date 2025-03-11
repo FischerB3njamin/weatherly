@@ -31,13 +31,12 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   void _loadData() async {
-    final result =
-        await controller.featchWeather(widget.latitude, widget.longitude, 16);
-    if (result != null) {
-      weather = result;
-    }
-    isLoading = false;
-    setState(() {});
+    weather = await controller.featchWeather(
+      widget.latitude,
+      widget.longitude,
+      16,
+    );
+    setState(() => isLoading = false);
   }
 
   @override
@@ -47,14 +46,15 @@ class _DetailPageState extends State<DetailPage> {
         title: Text(widget.city),
         actions: [
           IconButton(
-              onPressed: () {
-                setState(() => isLoading = true);
-                _loadData();
-              },
-              icon: Icon(
-                Icons.refresh,
-                size: 32,
-              ))
+            onPressed: () {
+              setState(() => isLoading = true);
+              _loadData();
+            },
+            icon: Icon(
+              Icons.refresh,
+              size: 32,
+            ),
+          ),
         ],
       ),
       body: isLoading
