@@ -27,11 +27,11 @@ class MainItem extends StatelessWidget {
             children: [
               for (final location in locations)
                 Dismissible(
-                  key: Key("${locations.indexOf(location)}"),
+                  key: Key(location.name),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) async {
                     locations.remove(location);
-                    weatherController.updateCities(jsonEncode(locations));
+                    await weatherController.updateCities(jsonEncode(locations));
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
