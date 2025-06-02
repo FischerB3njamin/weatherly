@@ -31,7 +31,7 @@ Explore **Weatherly**’s core features through these screenshots.
       <img src="assets/images/screenshots/search.png" width="300"/><br/><sub>City Search with Suggestions</sub>
     </td>
     <td align="center">
-      <img src="assets/images/screenshots/weather_detail.png" width="300"/><br/><sub>Forecast for Next Days</sub>
+      <img src="assets/images/screenshots/weather.png" width="300"/><br/><sub>Forecast for Next Days</sub>
     </td>
   </tr>
 </table>
