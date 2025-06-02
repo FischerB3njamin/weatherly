@@ -17,6 +17,7 @@ Use this quick index to jump directly to key sections of the README:
 
 ---
 
+
 ## Screenshots
 
 Explore **Weatherly**’s core features through these screenshots.
